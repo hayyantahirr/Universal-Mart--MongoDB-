@@ -1,0 +1,12 @@
+.inp {
+  background-color: white;
+  border: 2px solid black;
+}
+.alreadylogin {
+  cursor: pointer;
+  text-decoration: underline;
+  color: rgb(54, 54, 252);
+}
+.alreadylogin:hover {
+  text-decoration: none;
+}
