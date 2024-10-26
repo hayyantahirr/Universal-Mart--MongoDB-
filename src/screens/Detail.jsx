@@ -5,6 +5,7 @@ import { doc, getDoc } from "firebase/firestore"; // These tools help us get the
 import { db } from "../config/firebase/firebaseconfig"; // We're telling our code where to find the big list of products.
 import { useDispatch } from "react-redux"; // This tool helps us send messages to our cart so we can add items to it.
 import { addToCart } from "../config/Redux/cartSlice"; // This is the message we send when we want to put something in the cart.
+import axios from "axios";
 
 const Detail = () => {
   const param = useParams(); // We're grabbing the product ID from the web address so we know which product to show.
@@ -20,17 +21,19 @@ const Detail = () => {
 
   // This is our fetch data function; it will go and grab the product details from our big list in Firestore.
   async function getDataThroughId() {
-    const docRef = doc(db, "product", param.id); // We're pointing to the exact product we want in our big list.
     try {
-      const docSnap = await getDoc(docRef); // We're taking a snapshot of the product so we can see its details.
-      if (docSnap.exists()) {
-        const data = docSnap.data(); // We're pulling out the details from the snapshot.
-        data.id = docSnap.id; // We're saving the product ID with the details.
-        setProduct(data); // We're putting the details into our special product box.
-        console.log(data); // We're showing the details in the console (a special screen for programmers).
-      } else {
-        console.log("No such document!"); // If the product isn't in the list, we let ourselves know.
-      }
+      await axios(`https://universalmartapi.vercel.app/products/`).then(
+        (res) => {
+          const foundProduct = res.data.data.find(
+            (item) => item._id === param.id
+          );
+          console.log(foundProduct);
+          setProduct(foundProduct); // We're putting the details into our special product box.
+        }
+      );
+     
+     
+
       setLoading(false); // We're done waiting for the product details, so we stop the loading spinner.
     } catch (e) {
       console.log(e); // If something goes wrong, we let ourselves know what the problem is.
@@ -151,7 +154,7 @@ const Detail = () => {
       )}
     </>
   );
-}  
+};
 export default Detail;
 
 // ### Simple Explanation:

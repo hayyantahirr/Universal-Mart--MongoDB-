@@ -34,20 +34,28 @@ function Sell() {
 
     // Add product details to Firestore
     try {
-      await addDoc(collection(db, "product"), {
-        title: title.current.value,
-        img: url,
-        price: price.current.value,
-        brand: brand.current.value,
-        category: category.current.value,
-        description: description.current.value,
-      });
+      await fetch("https://universalmartapi.vercel.app/products/addProduct/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: title.current.value,
+          img: url,
+          price: price.current.value,
+          brand: brand.current.value,
+          category: category.current.value,
+          description: description.current.value,
+        }),
+      })
+        .then((res) => res.json())
+        .then((res) => console.log(res));
       console.log("Product added successfully");
       navigate(-1); // Navigate back after successful submission
     } catch (e) {
       console.error("Error adding document: ", e);
     }
-
+    //
     // Logging all values for testing
     console.log(title.current.value);
     console.log(price.current.value);

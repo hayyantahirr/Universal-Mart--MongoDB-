@@ -4,6 +4,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { app, db } from "../config/firebase/firebaseconfig";
 import "../Styles/universal.css";
 import { collection, getDocs, query } from "firebase/firestore";
+import axios from "axios";
 
 const Home = () => {
   const auth = getAuth(app); // Initialize Firebase Authentication
@@ -29,15 +30,16 @@ const Home = () => {
 
   // Function to fetch product data from Firestore
   async function gettingDocument() {
-    const q = query(collection(db, "product")); // Create a query to get all documents in "product" collection
+    // const q = query(collection(db, "product")); // Create a query to get all documents in "product" collection
     try {
-      const querySnapshot = await getDocs(q); // Execute the query
-      const allDocs = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        data.id = doc.id; // Add document ID to the data
-        return data;
-      });
-      setProduct(allDocs); // Update product state with fetched data
+
+     await axios("https://universalmartapi.vercel.app/products")
+        .then((res) => {
+          console.log(res.data.data);
+          setProduct(res.data.data);
+     })
+     
+       // Update product state with fetched data
       setLoading(false); // Set loading to false after data is fetched
       console.log(allDocs); // Log fetched data for debugging
     } catch (e) {
@@ -80,7 +82,7 @@ const Home = () => {
                   title={item.title} // Add key prop to each Card component
                   desc={item.description.slice(0, 50)} // Slice description to show only first 50 characters
                   img={item.img}
-                  id={item.id}
+                  id={item._id}
                   price={item.price}
                   category={item.category}
                   brand={item.brand}
