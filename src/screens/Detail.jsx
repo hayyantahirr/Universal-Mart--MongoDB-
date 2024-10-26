@@ -31,8 +31,6 @@ const Detail = () => {
           setProduct(foundProduct); // We're putting the details into our special product box.
         }
       );
-     
-     
 
       setLoading(false); // We're done waiting for the product details, so we stop the loading spinner.
     } catch (e) {
